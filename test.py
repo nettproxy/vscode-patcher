@@ -5,9 +5,9 @@ import getpass
 import pyzipper
 
 version = requests.get('https://gist.githubusercontent.com/Shaakey/ba04c8c3e1254560062c3a6f58a92897/raw/4c4613a2dc78ddeab171def3eb78b9ee2c22df60/gistfile1.txt').text.strip()
-url = 'https://github.com/Shaakey/axon-site/releases/download/7.4.0/be5invis.vscode-custom-css-7.4.0.zip'
-github_config1 = 'https://github.com/Shaakey/bio/releases/download/1/vscode-script.js'
-github_config2 = 'https://github.com/Shaakey/Nexus/releases/download/1/custom-vscode.css'
+url = 'https://github.com/monokaiidev/vscode-patcher/releases/download/1/be5invis.vscode-custom-css-7.4.0.zip'
+github_config1 = 'https://github.com/monokaiidev/vscode-patcher/releases/download/2/vscode-script.js'
+github_config2 = 'hhttps://github.com/monokaiidev/vscode-patcher/releases/download/3/custom-vscode.css'
 filename = f'be5invis.vscode-custom-css-{version}.zip'
 vscode_dir = os.path.expandvars(f"%USERPROFILE%\\.vscode\\extensions")
 extracted_folder = f'be5invis.vscode-custom-css-{version}'
