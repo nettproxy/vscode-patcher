@@ -3,14 +3,18 @@ from instances import error, monokai, newlog, success, warning, info
 from urllib.request import urlretrieve
 import getpass
 import pyzipper
+import shutil
+from matplotlib.font_manager import get_font_names
 
-version = requests.get('https://gist.githubusercontent.com/monokaiidev/ba04c8c3e1254560062c3a6f58a92897/raw/4c4613a2dc78ddeab171def3eb78b9ee2c22df60/gistfile1.txt').text.strip()
-url = 'https://github.com/monokaiidev/vscode-patcher/releases/download/1/be5invis.vscode-custom-css-7.4.0.zip'
-github_config1 = 'https://github.com/monokaiidev/vscode-patcher/releases/download/2/vscode-script.js'
-github_config2 = 'https://github.com/monokaiidev/vscode-patcher/releases/download/3/custom-vscode.css'
-filename = f'be5invis.vscode-custom-css-{version}.zip'
+
+version = requests.get('https://gist.githubusercontent.com/nettproxy/ba04c8c3e1254560062c3a6f58a92897/raw/4c4613a2dc78ddeab171def3eb78b9ee2c22df60/gistfile1.txt').text.strip()
+# url = 'https://github.com/nettproxy/vscode-patcher/releases/download/1/be5invis.vscode-custom-css-7.4.0.zip' -- need to fix, doesnt work
+github_config1 = 'https://github.com/nettproxy/vscode-patcher/releases/download/2/vscode-script.js'
+github_config2 = 'https://github.com/nettproxy/vscode-patcher/releases/download/3/custom-vscode.css'
+# filename = f'be5invis.vscode-custom-css-{version}.zip' -- doenst work, need to fix
 vscode_dir = os.path.expandvars(f"%USERPROFILE%\\.vscode\\extensions")
-extracted_folder = f'be5invis.vscode-custom-css-{version}'
+test_dir = os.path.expandvars(f"%USERPROFILE%\\")
+# extracted_folder = f'be5invis.vscode-custom-css-{version}' -- doenst work, need to fix
 config_1 = 'vscode-script.js'
 config_2 = 'custom-vscode.css'
 user_config_dir = os.path.expandvars("%APPDATA%\\Code\\User")
@@ -185,11 +189,11 @@ settings_data = {
     },
     "material-icon-theme.saturation": 0,
     "vscode_custom_css.imports": [
-        f"file:///C:/Users/{getpass.getuser()}/.vscode/extensions/custom-vscode.css",
-        f"file:///C:/Users/{getpass.getuser()}/.vscode/extensions/vscode-script.js"
+        f"file:///C:/Users/{getpass.getuser()}/custom-vscode.css",
+        f"file:///C:/Users/{getpass.getuser()}/vscode-script.js"
     ],
-    "workbench.colorTheme": "Default Dark Modern",
-    "workbench.iconTheme": "eq-material-theme-icons-light",
+    # "workbench.colorTheme": "Default Dark Modern",
+    # "workbench.iconTheme": "eq-material-theme-icons-light",
     "workbench.sideBar.location": "right",
     "material-icon-theme.files.color": "#42a5f5",
     "workbench.tree.enableStickyScroll": False,
@@ -197,25 +201,44 @@ settings_data = {
     "editor.cursorSmoothCaretAnimation": "on",
     "tabnine.experimentalAutoImports": True
 }
-monokai("Welcome to Monokai's VSCode Patcher! Press 1 to continue and download everything.")
-# requests.post(webhook_url, data={"content": "Someone ran your script! :blush:"})
+monokai("Welcome to Proxy's VSCode Patcher! Press 1 to continue and download everything.")
 this_input = input("> ")
 
+def font_exists(font_name):
+    if font_name in get_font_names():
+        success(f"Font {font_name} found!")
+    else:
+        error(f"Font {font_name} not found!")
+        error("Please install the font and try again.")
+        exit(1)
+
+
+
+# print(get_font_names()) # for debugging
+
 if this_input == '1':
+    info("Make sure you have the Custom CSS and JS Loader Extension installed! If you dont have it, install it and try again.")
+    font_exists("0xProto Nerd Font")
     if os.path.isdir(vscode_dir):
         info("VSCode exists...")
         time.sleep(1)
     else:
         error("No VSCode found! Please install VSCode and try again.")
     os.system("cls")
-    info("Downloading file...")
-    urlretrieve(url, filename)
-    success("Download complete!")
+    # info("Downloading file...")
+    # urlretrieve(url, filename)
+    # success("Download complete!")
 
     def move_files_to_vscode(source_dir, destination_dir):
         for item in os.listdir(source_dir):
             source_path = os.path.join(source_dir, item)
             destination_path = os.path.join(destination_dir, item)
+
+            if not source_dir:
+                error("no source found")
+
+            if not destination_dir:
+                error("no destination found")
 
             if os.path.isdir(source_path):
                 shutil.copytree(source_path, destination_path, dirs_exist_ok=True)
@@ -236,14 +259,14 @@ if this_input == '1':
         os.remove(file)
 
     info("Extracting files from zip...")
-    extract_files_from_zip(filename, extracted_folder)
+    # extract_files_from_zip(filename, extracted_folder)
 
-    move_files_to_vscode(extracted_folder, vscode_dir)
+    # move_files_to_vscode(extracted_folder, vscode_dir)
 
     urlretrieve(github_config1, config_1)
     urlretrieve(github_config2, config_2)
-    move_file_to_vscode(config_1, vscode_dir)
-    move_file_to_vscode(config_2, vscode_dir)
+    move_file_to_vscode(config_1, test_dir)
+    move_file_to_vscode(config_2, test_dir)
 
     settings_file_path = os.path.join(user_config_dir, "settings.json")
     if os.path.exists(settings_file_path):
@@ -252,5 +275,10 @@ if this_input == '1':
         json.dump(settings_data, file, indent=4)
     success("VSCode configuration update complete!")
     info("Please restart your VSCode, then press CTRL + Shift + P, then search for Reload Custom CSS and JS and press it.\nYou will get a box at the bottom left asking you to click it, then click it. And know, you will have a beautiful VSCode! Happy Coding!")
+    # shutil.rmtree(extracted_folder)
+    os.remove(config_1)
+    os.remove(config_2)
+    time.sleep(3)
+    exit(1)
 else:
     exit(1)
